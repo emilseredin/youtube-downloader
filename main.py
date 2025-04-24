@@ -24,10 +24,7 @@ def create_dir(dir_path: str) -> bool:
 
 
 def download_playlist(link: str):
-    if args.link:
-        playlist = Playlist(args.link)
-    else:
-        playlist = Playlist(link)
+    playlist = Playlist(link)
     print(f'Playlist: {playlist.title}')
     playlist_title = "-".join(playlist.title.split("/"))
     current_playlist_path = f'{VIDEO_DIR}/{playlist_title}'
@@ -55,7 +52,7 @@ def download_playlist(link: str):
         else:
             if "/" in title:
                 title = "-".join(title.split("/"))
-        title = f"{video_counter}_{title}"    
+        title = f"{video_counter}_{video.title}"    
         print(f'Downloading video: {title}')
         video.streams.get_highest_resolution().download(output_path=current_playlist_path,filename=title)
 
@@ -98,7 +95,7 @@ def download(link: str):
         download_audio(link=link)
     elif "watch" in link:
         download_video(link=link)
-    elif "list" in link:
+    elif "playlist" in link:
         download_playlist(link=link)
     else:
         print("Please provide a valid youtube link")
