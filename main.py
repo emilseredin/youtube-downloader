@@ -7,10 +7,18 @@ VIDEO_DIR = f'{os.path.expanduser("~")}/Videos'
 AUDIO_DIR = f'{os.path.expanduser("~")}/Music'
 
 parser = argparse.ArgumentParser(description="Download videos/playlists from YouTube")
-parser.add_argument("--link", type=str, help="link of a playlist/video")
-parser.add_argument("--start", type=int, 
+parser.add_argument(
+    "--link",
+    type=str,
+    help="link of a playlist/video")
+parser.add_argument(
+    "--start",
+    type=int,
     help="position of a video in the playlist to start downloading from")
-parser.add_argument("--audio", type=bool,
+parser.add_argument(
+    "-a",
+    "--audio",
+    action='store_true',
     help="download audio file")
 args = parser.parse_args()
 
@@ -19,6 +27,12 @@ def create_dir(dir_path: str) -> bool:
     """ Create the directory if it doesn't exist. """
     if not os.path.isdir(dir_path):
         os.mkdir(dir_path)
+
+def replace_slashes(title: str) -> str:
+    if "/" in title:
+        return "-".join(title.split("/"))
+    
+    return title
 
 
 def download_playlist(link: str, start: int):
@@ -29,9 +43,7 @@ def download_playlist(link: str, start: int):
     playlist_path = f'{VIDEO_DIR}/{playlist_title}'
     create_dir(playlist_path)
     for index, video in videos:
-        title = video.title
-        if "/" in title:
-            title = "-".join(title.split("/"))
+        title = replace_slashes(video.title)
         title = f"{index + 1}_{title}.mp4"  
           
         print(f'Downloading video: {title}')
@@ -43,17 +55,19 @@ def download_playlist(link: str, start: int):
 def download_video(link: str):
     video = YouTube(link)
     print(f'Downloading video: {video.title}')
-    title = video.title
-    if "/" in title:
-        title = "-".join(title.split("/"))
+    title = replace_slashes(video.title)
+    title = f"{title}.mp4" 
     video.streams.get_highest_resolution().download(output_path=VIDEO_DIR, filename=title)
 
 
 def download_audio(link: str):
     video = YouTube(link)
+    print(f'Downloading audio: {video.title}')
+    title = replace_slashes(video.title)
+    title = f"{title}.m4a"
     video.streams.get_audio_only().download(
         output_path=AUDIO_DIR,
-        filename=video.title)
+        filename=title)
 
         
 def download(link: str):
