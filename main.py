@@ -10,8 +10,6 @@ parser = argparse.ArgumentParser(description="Download videos/playlists from You
 parser.add_argument("--link", type=str, help="link of a playlist/video")
 parser.add_argument("--start", type=int, 
     help="position of a video in the playlist to start downloading from")
-parser.add_argument("--nth_video", type=int, 
-    help="download single video from a playlist")
 parser.add_argument("--audio", type=bool,
     help="download audio file")
 args = parser.parse_args()
